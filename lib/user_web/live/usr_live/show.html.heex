@@ -1,0 +1,28 @@
+<.header>
+  Usr <%= @usr.id %>
+  <:subtitle>This is a usr record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/users/#{@usr}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit usr</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Email"><%= @usr.email %></:item>
+  <:item title="Hashed password"><%= @usr.hashed_password %></:item>
+  <:item title="Confirmed at"><%= @usr.confirmed_at %></:item>
+</.list>
+
+<.back navigate={~p"/users"}>Back to users</.back>
+
+<.modal :if={@live_action == :edit} id="usr-modal" show on_cancel={JS.patch(~p"/users/#{@usr}")}>
+  <.live_component
+    module={UserWeb.UsrLive.FormComponent}
+    id={@usr.id}
+    title={@page_title}
+    action={@live_action}
+    usr={@usr}
+    patch={~p"/users/#{@usr}"}
+  />
+</.modal>

@@ -1,0 +1,43 @@
+<.header>
+  Listing Users
+  <:actions>
+    <.link patch={~p"/users/new"}>
+      <.button>New Usr</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="users"
+  rows={@streams.users}
+  row_click={fn {_id, usr} -> JS.navigate(~p"/users/#{usr}") end}
+>
+  <:col :let={{_id, usr}} label="Email"><%= usr.email %></:col>
+  <:col :let={{_id, usr}} label="Hashed password"><%= usr.hashed_password %></:col>
+  <:col :let={{_id, usr}} label="Confirmed at"><%= usr.confirmed_at %></:col>
+  <:action :let={{_id, usr}}>
+    <div class="sr-only">
+      <.link navigate={~p"/users/#{usr}"}>Show</.link>
+    </div>
+    <.link patch={~p"/users/#{usr}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, usr}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: usr.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="usr-modal" show on_cancel={JS.patch(~p"/users")}>
+  <.live_component
+    module={UserWeb.UsrLive.FormComponent}
+    id={@usr.id || :new}
+    title={@page_title}
+    action={@live_action}
+    usr={@usr}
+    patch={~p"/users"}
+  />
+</.modal>
