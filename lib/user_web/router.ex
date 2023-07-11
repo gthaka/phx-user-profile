@@ -20,6 +20,18 @@ defmodule UserWeb.Router do
     get "/", PageController, :home
   end
 
+  # other
+  scope "/", UserWeb do
+    pipe_through :browser
+
+    live "/users", UsrLive.Index, :index
+    live "/users/new", UsrLive.Index, :new
+    live "/users/:id/edit", UsrLive.Index, :edit
+
+    live "/users/:id", UsrLive.Show, :show
+    live "/users/:id/show/edit", UsrLive.Show, :edit
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", UserWeb do
   #   pipe_through :api
@@ -27,7 +39,6 @@ defmodule UserWeb.Router do
 
   # Enable Swoosh mailbox preview in development
   if Application.compile_env(:user, :dev_routes) do
-
     scope "/dev" do
       pipe_through :browser
 
